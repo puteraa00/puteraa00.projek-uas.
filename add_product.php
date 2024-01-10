@@ -4,22 +4,15 @@ include 'config.php';
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $name = $_POST['name'];
     $description = $_POST['description'];
+    $image = $_POST['image']; // Anda mungkin ingin menangani upload gambar dengan benar
     $price = $_POST['price'];
 
-    $image = $_FILES['image']['name'];
-    $target_dir = "upload/";  // Ganti dengan direktori tempat menyimpan gambar
-    $target_file = $target_dir . basename($_FILES['image']['name']);
-
-    if (move_uploaded_file($_FILES['image']['tmp_name'], $target_file)) {
-        $insertQuery = "INSERT INTO products (name, description, image, price) VALUES ('$name', '$description', '$target_file', '$price')";
-
-        if ($conn->query($insertQuery) === TRUE) {
-            echo "Produk berhasil ditambahkan!";
-        } else {
-            echo "Error: " . $insertQuery . "<br>" . $conn->error;
-        }
+    $insertQuery = "INSERT INTO products (name, description, image, price) VALUES ('$name', '$description', '$image', '$price')";
+    
+    if ($conn->query($insertQuery) === TRUE) {
+        echo "Produk berhasil ditambahkan!";
     } else {
-        echo "Error dalam mengunggah file.";
+        echo "Error: " . $insertQuery . "<br>" . $conn->error;
     }
 }
 ?>
@@ -32,8 +25,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <label for="description">Deskripsi Produk:</label>
     <textarea id="description" name="description" required></textarea>
 
-    <label for="image">Unggah Gambar Produk:</label>
-    <input type="file" id="image" name="image" accept="image/*" required>
+    <label for="image">URL Gambar Produk:</label>
+    <input type="file" id="image" name="image" accept="pics/*" required>
+    <input type="submit" value="Upload">
 
     <label for="price">Harga Produk:</label>
     <input type="text" id="price" name="price" required>
